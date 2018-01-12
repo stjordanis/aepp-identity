@@ -14,6 +14,7 @@ import {logTx} from '@/lib/logging'
 import {getEstimatedGas, getGasPrice} from "@/lib/remoteGetters"
 import abiDecoder from 'abi-decoder'
 var util = require('ethereumjs-util')
+import WebsocketHandler from '../lib/websocketHandler'
 
 Vue.use(Vuex)
 
@@ -26,6 +27,7 @@ const store = (function () {
   var aeContract
   var derivedKey
   let web3
+  let websocketHandler
   return new Vuex.Store({
     state: {
       title: '',
@@ -64,6 +66,12 @@ const store = (function () {
           name : 'Network',
           icon : 'static/icons/notary.svg',
           main : '/network'
+        },
+        {
+          type : APP_TYPES.INTERNAL,
+          name : 'Websocket',
+          icon : 'static/icons/notary.svg',
+          main : '/websocket'
         },
       ],
     },
@@ -124,6 +132,9 @@ const store = (function () {
     getters: {
       web3 () {
         return web3
+      },
+      websocketHandler () {
+        return websocketHandler
       },
       addresses: state => {
         if (!state.keystore) {
@@ -462,6 +473,10 @@ const store = (function () {
           dispatch('updateAllBalances')
         }
         state.showIdManager = showIdManager
+      },
+      initWebsocket ({state, dispatch}, store) {
+        console.log('initWebsocket')
+        websocketHandler = new WebsocketHandler(store)
       }
     }
   })

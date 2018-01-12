@@ -7,6 +7,7 @@ import Unlock from '@/components/Unlock.vue'
 import AppBrowser from '@/components/AppBrowser.vue'
 import Transfer from '@/components/Transfer.vue'
 import Network from '@/components/Network.vue'
+import Websocket from '@/components/Websocket.vue'
 
 Vue.use(Router)
 
@@ -16,7 +17,8 @@ export const PATHS = {
   UNLOCK: '/unlock',
   EMBEDDED_APP: '/app-browser',
   TRANSFER: '/transfer',
-  NETWORK: '/network'
+  NETWORK: '/network',
+  WEBSOCKET: '/websocket'
 }
 
 const router = new Router({
@@ -76,6 +78,15 @@ const router = new Router({
       meta: {
         title: 'Network',
         appClass: 'network'
+      }
+    },
+    {
+      name: 'websocket',
+      path: PATHS.WEBSOCKET,
+      component: Websocket,
+      meta: {
+        title: 'Websocket',
+        appClass: 'websocket'
       }
     }
   ]

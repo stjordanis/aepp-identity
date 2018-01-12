@@ -35,6 +35,7 @@ export default {
   mounted: function () {
     let postMessagehandler = new PostMessageHandler(store)
     postMessagehandler.registerListener()
+    this.$store.dispatch('initWebsocket', store)
   },
   methods: {
   },

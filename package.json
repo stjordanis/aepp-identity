@@ -24,6 +24,7 @@
     "ethjs-unit": "^0.1.6",
     "lodash": "^4.17.4",
     "moment": "^2.19.2",
+    "socket.io-client": "^2.0.4",
     "swiper": "^4.0.6",
     "vue": "^2.5.8",
     "vue-awesome-swiper": "^2.6.7",
