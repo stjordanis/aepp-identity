@@ -1,13 +1,16 @@
 import io from 'socket.io-client'
+const EventEmitter = require('events')
 
 class WebsocketHandler {
   constructor (store) {
     console.log('WebsocketHandler constructor')
     this.store = store
     this.socket = io('http://192.168.111.42:3000')
+    this.eventEmitter = new EventEmitter()
 
     this.socket.on('partnerDisconnected', () => {
       console.log('partnerDisconnected')
+      this.emit('partnerDisconnected')
     })
 
     this.socket.on('getAccounts', (callback) => {
@@ -48,6 +51,14 @@ class WebsocketHandler {
       // TODO: what if error
       console.log(e)
     }
+  }
+
+  on (eventName, callback) {
+    this.eventEmitter.on(eventName, callback)
+  }
+
+  emit (eventName, ...args) {
+    this.eventEmitter.emit(eventName, ...args)
   }
 }
 

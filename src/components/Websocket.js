@@ -4,22 +4,21 @@ export default {
   },
   data () {
     return {
-      channelPasswordInput: null,
-      isConnected: false
+      channelPasswordInput: null
     }
   },
   computed: {
     socketHandler () {
       return this.$store.getters.websocketHandler
+    },
+    isConnected () {
+      return this.$store.state.websocketConnected
     }
   },
   methods: {
     async joinChannel () {
       if (this.socketHandler) {
-        let success = await this.socketHandler.joinChannel(this.channelPasswordInput)
-        if (success) {
-          this.isConnected = true
-        }
+        this.$store.dispatch('joinWebsocketChannel', this.channelPasswordInput)
       }
     }
   },

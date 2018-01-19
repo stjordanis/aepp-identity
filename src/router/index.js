@@ -18,7 +18,7 @@ export const PATHS = {
   EMBEDDED_APP: '/app-browser',
   TRANSFER: '/transfer',
   NETWORK: '/network',
-  WEBSOCKET: '/websocket'
+  REMOTE_CONNECT: '/remote-connect'
 }
 
 const router = new Router({
@@ -81,12 +81,12 @@ const router = new Router({
       }
     },
     {
-      name: 'websocket',
-      path: PATHS.WEBSOCKET,
+      name: 'remote-connect',
+      path: PATHS.REMOTE_CONNECT,
       component: Websocket,
       meta: {
-        title: 'Websocket',
-        appClass: 'websocket'
+        title: 'Remote Connect',
+        appClass: 'remote-connect'
       }
     }
   ]

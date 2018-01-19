@@ -20,7 +20,7 @@ Vue.use(Vuex)
 
 const APP_TYPES = {
   INTERNAL : 0,
-  EXTERNAL : 1,
+  EXTERNAL : 1
 }
 
 const store = (function () {
@@ -42,6 +42,7 @@ const store = (function () {
       balances: [],
       rpcUrl: 'https://kovan.infura.io',
       keystore: null,
+      websocketConnected: false,
       apps : [
         {
           type : APP_TYPES.EXTERNAL,
@@ -69,13 +70,16 @@ const store = (function () {
         },
         {
           type : APP_TYPES.INTERNAL,
-          name : 'Websocket',
+          name : 'Remote Dapp Connect',
           icon : 'static/icons/notary.svg',
-          main : '/websocket'
+          main : '/remote-connect'
         },
       ],
     },
     mutations: {
+      setWebsocketConnected (state, isConnected) {
+        state.websocketConnected = isConnected
+      },
       updateRPC (state, rpcUrl) {
         state.rpcUrl = rpcUrl
       },
@@ -180,6 +184,12 @@ const store = (function () {
       }
     },
     actions: {
+      async joinWebsocketChannel ({commit, getters}, channelPassword) {
+        let success = await getters.websocketHandler.joinChannel(channelPassword)
+        if (success) {
+          commit('setWebsocketConnected', true)
+        }
+      },
       updateRPC ({commit, dispatch}, rpcURL) {
         commit('updateRPC', rpcURL)
         dispatch('logout')
@@ -280,6 +290,9 @@ const store = (function () {
       },
       setUnlocked({commit}, isUnlocked) {
         commit('setUnlocked', isUnlocked)
+      },
+      setWebsocketConnected ({commit}, isConnected) {
+        commit('setWebsocketConnected', isConnected)
       },
       restoreAddresses ({getters, dispatch, commit, state}) {
         let numUnlockedAddresses = localStorage.getItem('numUnlockedAddresses')
@@ -477,6 +490,9 @@ const store = (function () {
       initWebsocket ({state, dispatch}, store) {
         console.log('initWebsocket')
         websocketHandler = new WebsocketHandler(store)
+        websocketHandler.on('partnerDisconnected', () => {
+          dispatch('setWebsocketConnected', false)
+        })
       }
     }
   })
