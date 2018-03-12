@@ -19,6 +19,9 @@
     "babel-plugin-transform-es3-property-literals": "^6.22.0",
     "bignumber.js": "^4.1.0",
     "bluebird": "^3.5.1",
+    "cordova-android": "^7.0.0",
+    "cordova-browser": "^5.0.3",
+    "cordova-plugin-whitelist": "^1.3.3",
     "emoji-datasource-apple": "^4.0.3",
     "es6-promise": "^4.1.1",
     "eth-lightwallet": "^3.0.0",
@@ -118,5 +121,14 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-whitelist": {}
+    },
+    "platforms": [
+      "browser",
+      "android"
+    ]
+  }
 }
