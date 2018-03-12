@@ -5,7 +5,7 @@ export default {
   data () {
     return {
       loading: true,
-      path: `//${this.$route.fullPath}`
+      path: `http://${this.$route.fullPath}`
     }
   },
   components: { QuickId },
