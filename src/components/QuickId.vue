@@ -43,7 +43,7 @@
     .back {
       width: 25px;
       height: auto;
-      background: url('/static/icons/grid.svg') no-repeat;
+      background: url('../../static/icons/grid.svg') no-repeat;
       background-size: contain;
       border-right: 2px solid #f1f4f7;
       margin-right: 15px;
