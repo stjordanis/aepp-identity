@@ -29,6 +29,13 @@ export default {
     } else if (document.domain.includes('aepps.dev')) {
       document.domain = 'aepps.dev'
     }
+
+    window.handleOpenURL = urlString => {
+      const url = new URL(urlString)
+      const path = url.pathname
+      console.log('app opened via: ' + urlString + ' path: ' + path)
+      this.$router.push(path)
+    }
   },
   mounted: function () {
     let postMessagehandler = new PostMessageHandler(store)
