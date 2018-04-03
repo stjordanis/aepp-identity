@@ -21,10 +21,11 @@
       >Contact address</ae-label>
       <ae-address-input
         :id="`${_uid}-address`"
+        :isBase58="true"
         name="address"
         v-model="address"
-        v-validate="'required|min:42'"
-        :placeholder="`0x••••• ••••••• •••••••\n••••••• ••••••• •••••••`"
+        v-validate="'required|min:97'"
+        :placeholder="`ak$••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••`"
       />
     </form>
 

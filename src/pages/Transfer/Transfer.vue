@@ -29,11 +29,12 @@
       >Receiving address</ae-label>
       <ae-address-input
         :id="`${_uid}-addressTo`"
+        :isBase58="true"
         name="addressTo"
         v-model="to"
-        v-validate="'required|min:42'"
+        v-validate="'required|min:97'"
         data-vv-delay="1"
-        :placeholder="`0x00000 0000000 0000000\n0000000 0000000 0000000`"
+        :placeholder="`ak$••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••`"
       />
       <div class="buttons">
         <ae-button
