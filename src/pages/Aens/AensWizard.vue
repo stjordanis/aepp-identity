@@ -44,8 +44,9 @@
         <ae-button type='dramatic' @click="startUpdate">Point</ae-button>
       </div>
       <div v-else-if="currentState === states.CLAIMED_AND_NOT_OWNED">
-        <span>This domain has been already claimed. If you think you are the owner of this domain you can add the domain to your list.</span>
-        <ae-button type='dramatic' @click="checkOwnership">Check ownership</ae-button>
+        <span>This domain has been already claimed. If you think you are the owner of this domain you can add the domain to your list. Be aware taht if you are
+          not actually the owner all update requests will fail.</span>
+        <ae-button type='dramatic' @click="addDomain">Add to my domains</ae-button>
       </div>
       <div v-else-if="currentState === states.START_PRECLAIM">
         <span>This domain seems to be available. You can start claiming the domain
@@ -230,7 +231,6 @@ export default {
           domain: this.domainToCheck,
           registrar: this.activeIdentity.address,
           salt: salt,
-          state: 0,
           nameHash: null,
           preClaimTx: preClaimResult,
           claimTx: null,
@@ -271,8 +271,22 @@ export default {
     startTransfer () {
       alert('Not implemented ;)')
     },
-    checkOwnership () {
-      alert('Not implemented ;)')
+    async addDomain () {
+      const apiData = await this.aeternityClient.aens.getName(this.domain)
+      if (!apiData || !apiData['name_hash']) {
+        throw new Error('Domain not found')
+      }
+      const domainObj = {
+        domain: this.domain,
+        registrar: this.activeIdentity.address,
+        salt: null,
+        nameHash: apiData['name_hash'],
+        preClaimTx: null,
+        claimTx: null,
+        updateTx: null
+      }
+      this.$store.commit('addDomainItem', domainObj)
+      this.checkDomainState(this.domain)
     },
     showError (message) {
       this.$store.dispatch('setNotification', {
