@@ -181,6 +181,12 @@ const store = new Vuex.Store({
         state.domains.push(item)
       }
     },
+    removeDomainItem (state, item) {
+      const domainIndex = state.domains.findIndex(domainObj => domainObj.domain === item.domain && domainObj.registrar === item.registrar)
+      if (domainIndex > -1) {
+        state.domains.splice(domainIndex, 1)
+      }
+    },
     setNumAddresses (state, numAddresses) {
       state.numAddresses = numAddresses
     }
@@ -214,7 +220,7 @@ const store = new Vuex.Store({
       getters.hdWallet.addresses.forEach(address =>
         dispatch('updateBalance', address.pub))
     },
-    async updateBalanceSdk ({getters: {aeternityClient}, commit}, address) {
+    async updateBalance ({getters: {aeternityClient}, commit}, address) {
       try {
         const readBalance = await aeternityClient.accounts.getBalance(address)
         const tokenBalance = (new BN(readBalance, 10)).mul(new BN('1000000000000000000', 10))
@@ -222,12 +228,13 @@ const store = new Vuex.Store({
         commit('setBalance', { address, balance, tokenBalance })
         // console.log('readBalance', readBalance)
       } catch (err) {
-        console.log(err)
+        // console.log(err)
+        commit('setBalance', { address, balance: 0, tokenBalance: 0 })
       }
     },
-    async updateBalance ({getters: {aeternityClient}, state: { nodeSettings }, commit}, address) {
+    async updateBalanceFetch ({getters: {aeternityClient}, state: { nodeSettings }, commit}, address) {
       try {
-        const rawResult = await fetch(`https://${nodeSettings.host}/internal/v2/account/balance/${address}`)
+        const rawResult = await fetch(`https://${nodeSettings.host}/v2/account/balance/${address}`)
         const resultJson = await rawResult.json()
         // console.log('result', resultJson)
         if (resultJson && resultJson.balance) {
@@ -342,6 +349,20 @@ const store = new Vuex.Store({
     },
     async getDomain ({ state: { hdWallet, selectedIdentityIdx }, getters: { aeternityClient } }, { domain }) {
       return await aeternityClient.aens.getName(domain)
+    },
+    async revokeDomain ({ state: { hdWallet, selectedIdentityIdx }, getters: { aeternityClient } }, { nameHash }) {
+      const account = hdWallet.addresses[selectedIdentityIdx]
+      const revokeFee = 1
+      const tx = {
+        fee: revokeFee,
+        amount: 0,
+        from: account.pub,
+        to: '0x0'
+      }
+      if (!await approveTransactionDialog(tx, 'AENS')) {
+        throw new Error('Payment rejected by user')
+      }
+      return await aeternityClient.aens.revoke(nameHash, account, { fee: revokeFee })
     },
     async waitForTransaction ({ getters: { aeternityClient } }, { txHash }) {
       return await aeternityClient.tx.waitForTransaction(txHash)

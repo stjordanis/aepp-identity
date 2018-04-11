@@ -73,6 +73,9 @@
         <ae-loader></ae-loader>
         <span>waiting for update transaction to be mined</span>
       </div>
+      <div v-else-if="currentState === states.IS_REVOKED">
+        <span>The domain was previously claimed and then revoked. There is a timeout on when you can register this domain again.</span>
+      </div>
     </div>
 
     <quick-id showBackButton/>
@@ -108,7 +111,8 @@ export default {
         WAITING_FOR_CLAIM: 'waitingForClaim',
         PRECLAIM_MINED: 'preclaimMined',
         WAITING_FOR_PRECLAIM: 'waitingForPreclaim',
-        WAITING_FOR_UPDATE: 'waitingForUpdate'
+        WAITING_FOR_UPDATE: 'waitingForUpdate',
+        IS_REVOKED: 'isRevoked'
       },
       currentState: null,
       storageObj: null,
@@ -144,6 +148,18 @@ export default {
         return null
       }
       return this.apiData.pointers.account_pubkey || this.apiData.pointers.oracle_pubkey
+    },
+    isClaimed () {
+      return this.apiData && !this.apiData.error ? true : false
+    },
+    isPointed () {
+      return this.apiData && this.apiData.pointers && (this.apiData.pointers.account_pubkey || this.apiData.pointers.oracle_pubkey) ? true : false
+    },
+    isAvailable () {
+      return this.apiData && this.apiData.error && this.apiData.status === 404 && this.apiData.data.reason === 'Name not found' ? true : false
+    },
+    isRevoked () {
+      return this.apiData && this.apiData.error && this.apiData.status === 404 && this.apiData.data.reason === 'Name revoked' ? true : false
     }
   },
   components: {
@@ -168,7 +184,9 @@ export default {
       if (apiData && apiData.pointers && typeof apiData.pointers === 'string') {
         apiData.pointers = JSON.parse(apiData.pointers)
       }
+      console.log('apiData', apiData)
       this.apiData = apiData
+
       // also check if localstorage record is present
       const storageObj = this.myDomains.find(domainObj => domainObj.domain === domain)
       this.storageObj = storageObj
@@ -177,21 +195,20 @@ export default {
         // we have an unmined update tx
         this.currentState = this.states.WAITING_FOR_UPDATE
         this.reloadAfterTx(storageObj.updateTx.tx_hash)
-      } else if (apiData && storageObj && apiData.pointers && (apiData.pointers.account_pubkey || apiData.pointers.oracle_pubkey)) {
+      } else if (this.isClaimed && storageObj && this.isPointed) {
         this.currentState = this.states.CLAIMED_AND_OWNED_ROUTED
-      } else if (apiData && storageObj) {
+      } else if (this.isClaimed && storageObj) {
         this.currentState = this.states.CLAIMED_AND_OWNED_NOT_ROUTED
-      } else if (apiData &&
+      } else if (this.isClaimed && !storageObj) {
         // if claimed & !localstorage => show details and already registered
-        (!apiData.pointers || (!apiData.pointers.account_pubkey && !apiData.pointers.oracle_pubkey)) &&
-        !storageObj) {
         this.currentState = this.states.CLAIMED_AND_NOT_OWNED
-      } else if (apiData && !storageObj) {
-        this.currentState = this.states.CLAIMED_AND_NOT_OWNED
-      } else if (!apiData && !storageObj) {
+      } else if (this.isAvailable && !storageObj) {
         // if not claimed & !localstorage => start pre-claim
         this.currentState = this.states.START_PRECLAIM
-      } else if (!apiData && storageObj) {
+      } else if (this.isRevoked) {
+        // currently is timeouted after a revoke
+        this.currentState = this.states.IS_REVOKED
+      } else if (this.isAvailable && storageObj) {
         // if not claimed & localstorage => show depending on state of localstorage
         // we have a claim tx
         if (storageObj.claimTx) {
@@ -262,11 +279,28 @@ export default {
         this.checkDomainState(this.domain)
       } catch (e) {
         console.log(e)
-        this.showError('Claim Failed')
+        this.showError('Update Failed')
       }
     },
-    startRevoke () {
-      alert('Not implemented ;)')
+    async startRevoke () {
+      try {
+        const revokeResult = await this.$store.dispatch('revokeDomain', { nameHash: this.apiData.name_hash })
+        console.log('revokeResult', revokeResult)
+        if (revokeResult && revokeResult.tx_hash) {
+          // remove from local copies
+          const domainObj = {
+            domain: this.domain,
+            registrar: this.activeIdentity.address,
+          }
+          this.$store.commit('removeDomainItem', domainObj)
+
+          this.showError(`Revoked the domain ${this.domain}`)
+        }
+        this.$router.push({ name: 'aens-list' })
+      } catch (e) {
+        console.log(e)
+        this.showError('Revoke Failed')
+      }
     },
     startTransfer () {
       alert('Not implemented ;)')
