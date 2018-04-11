@@ -150,16 +150,16 @@ export default {
       return this.apiData.pointers.account_pubkey || this.apiData.pointers.oracle_pubkey
     },
     isClaimed () {
-      return this.apiData && !this.apiData.error ? true : false
+      return this.apiData && !this.apiData.error
     },
     isPointed () {
-      return this.apiData && this.apiData.pointers && (this.apiData.pointers.account_pubkey || this.apiData.pointers.oracle_pubkey) ? true : false
+      return this.apiData && this.apiData.pointers && (this.apiData.pointers.account_pubkey || this.apiData.pointers.oracle_pubkey)
     },
     isAvailable () {
-      return this.apiData && this.apiData.error && this.apiData.status === 404 && this.apiData.data.reason === 'Name not found' ? true : false
+      return this.apiData && this.apiData.error && this.apiData.status === 404 && this.apiData.data.reason === 'Name not found'
     },
     isRevoked () {
-      return this.apiData && this.apiData.error && this.apiData.status === 404 && this.apiData.data.reason === 'Name revoked' ? true : false
+      return this.apiData && this.apiData.error && this.apiData.status === 404 && this.apiData.data.reason === 'Name revoked'
     }
   },
   components: {
@@ -290,7 +290,7 @@ export default {
           // remove from local copies
           const domainObj = {
             domain: this.domain,
-            registrar: this.activeIdentity.address,
+            registrar: this.activeIdentity.address
           }
           this.$store.commit('removeDomainItem', domainObj)
 
