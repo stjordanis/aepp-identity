@@ -8,7 +8,7 @@
           :help-text="errors.first('domain')"
         >Enter a .aet domain</ae-label>
         <ae-input :id="_uid" name="domain" placeholder="yourdomain.aet" v-model="domainToCheck" v-validate="{regex: /^\w+.(aet|test)$/i}"></ae-input>
-        <ae-button :inactive="errors.any()" type='boring'>Check</ae-button>
+        <ae-button :inactive="errors.has('domain')" type='boring'>Check</ae-button>
       </form>
     </div>
 
@@ -21,16 +21,35 @@
         <span>This domain has been claimed and it seems you are the owner. The domain currently points to:</span>
         <ae-address :address="pointer" size="compact" :show-avatar="true"></ae-address>
         <span>You can update the location this domain points to here:</span>
+        <ae-label
+          :for="_uid"
+          help-type="exciting"
+          :help-text="errors.first('addressToPoint')"
+        >New Pointer</ae-label>
         <ae-address-input
+          :id="_uid"
           :isBase58="true"
           name="addressToPoint"
           v-model="addressToPoint"
           v-validate="'required|min:97'"
           data-vv-delay="1">
         </ae-address-input>
-        <ae-button type='boring' @click="startUpdate">Update</ae-button>
+        <ae-button type='boring' :inactive="errors.has('addressToPoint')" @click="startUpdate">Update</ae-button>
+        <ae-label
+          :for="_uid"
+          help-type="exciting"
+          :help-text="errors.first('transferAddress')"
+        >Transfer to this address</ae-label>
+        <ae-address-input
+          :id="_uid"
+          :isBase58="true"
+          name="transferAddress"
+          v-model="transferAddress"
+          v-validate="'required|min:97'"
+          data-vv-delay="1">
+        </ae-address-input>
+        <ae-button type='boring' :inactive="errors.has('transferAddress')" @click="startTransfer">Transfer</ae-button>
         <ae-button type='boring' @click="startRevoke">Revoke</ae-button>
-        <ae-button type='boring' @click="startTransfer">Transfer</ae-button>
       </div>
       <div v-if="currentState === states.CLAIMED_AND_OWNED_NOT_ROUTED">
         <span>The domain was claimed by you but it's not pointing to any address yet. Enter the address you want the domain to point to:</span>
@@ -116,7 +135,8 @@ export default {
       },
       currentState: null,
       apiData: null,
-      addressToPoint: null
+      addressToPoint: null,
+      transferAddress: ''
     }
   },
   computed: {
@@ -273,6 +293,7 @@ export default {
       }
     },
     async startUpdate () {
+      if (!await this.$validator.validate('addressToPoint')) return
       try {
         const domainObj = this.storageObj
         const updateDomainResult = await this.$store.dispatch('updateDomain', { nameHash: this.apiData.name_hash, pubKey: this.addressToPoint })
@@ -303,8 +324,22 @@ export default {
         this.showError('Revoke Failed')
       }
     },
-    startTransfer () {
-      alert('Not implemented ;)')
+    async startTransfer () {
+      if (!await this.$validator.validate('transferAddress')) return
+      try {
+        const transferAddress = this.transferAddress
+        const transferResult = await this.$store.dispatch('transferDomain', { nameHash: this.apiData.name_hash, recipient: transferAddress })
+        console.log('transferResult', transferResult)
+        if (transferResult && transferResult.tx_hash) {
+          this.storageObj.registrar = transferAddress
+
+          this.showError(`Tranfered the domain ${this.domain} to ${transferAddress}`)
+        }
+        this.$router.push({ name: 'aens-list' })
+      } catch (e) {
+        console.log(e)
+        this.showError('Transfer Failed')
+      }
     },
     async addDomain () {
       const apiData = await this.aeternityClient.aens.getName(this.domain)

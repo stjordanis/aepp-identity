@@ -364,6 +364,20 @@ const store = new Vuex.Store({
       }
       return await aeternityClient.aens.revoke(nameHash, account, { fee: revokeFee })
     },
+    async transferDomain ({ state: { hdWallet, selectedIdentityIdx }, getters: { aeternityClient } }, { nameHash, recipient }) {
+      const account = hdWallet.addresses[selectedIdentityIdx]
+      const transferFee = 1
+      const tx = {
+        fee: transferFee,
+        amount: 0,
+        from: account.pub,
+        to: '0x0'
+      }
+      if (!await approveTransactionDialog(tx, 'AENS')) {
+        throw new Error('Payment rejected by user')
+      }
+      return await aeternityClient.aens.transfer(nameHash, recipient, account, { fee: transferFee })
+    },
     async waitForTransaction ({ getters: { aeternityClient } }, { txHash }) {
       return await aeternityClient.tx.waitForTransaction(txHash)
     },
