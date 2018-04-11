@@ -115,7 +115,6 @@ export default {
         IS_REVOKED: 'isRevoked'
       },
       currentState: null,
-      storageObj: null,
       apiData: null,
       addressToPoint: null
     }
@@ -160,6 +159,9 @@ export default {
     },
     isRevoked () {
       return this.apiData && this.apiData.error && this.apiData.status === 404 && this.apiData.data.reason === 'Name revoked'
+    },
+    storageObj () {
+      return this.myDomains.find(domainObj => domainObj.domain === this.domain)
     }
   },
   components: {
@@ -177,54 +179,53 @@ export default {
       if (!await this.$validator.validateAll()) return
       this.domain = this.domainToCheck
     },
-    async checkDomainState (domain) {
-      this.loading = true
-      // make api call, check if claimed
-      const apiData = await this.aeternityClient.aens.getName(domain)
+    async getApiData () {
+      const apiData = await this.aeternityClient.aens.getName(this.domain)
       if (apiData && apiData.pointers && typeof apiData.pointers === 'string') {
         apiData.pointers = JSON.parse(apiData.pointers)
       }
-      console.log('apiData', apiData)
       this.apiData = apiData
+    },
+    async checkDomainState () {
+      this.loading = true
+      // get info about domain from api
+      await this.getApiData()
 
-      // also check if localstorage record is present
-      const storageObj = this.myDomains.find(domainObj => domainObj.domain === domain)
-      this.storageObj = storageObj
       // if claimed & localstorage => show possibly own domain
-      if (apiData && storageObj && storageObj.updateTx && !(await this.isTxMined(storageObj.updateTx.tx_hash))) {
+      if (this.apiData && this.storageObj && this.storageObj.updateTx && !(await this.isTxMined(this.storageObj.updateTx.tx_hash))) {
         // we have an unmined update tx
         this.currentState = this.states.WAITING_FOR_UPDATE
-        this.reloadAfterTx(storageObj.updateTx.tx_hash)
-      } else if (this.isClaimed && storageObj && this.isPointed) {
+        this.reloadAfterTx(this.storageObj.updateTx.tx_hash)
+      } else if (this.isClaimed && this.storageObj && this.isPointed) {
         this.currentState = this.states.CLAIMED_AND_OWNED_ROUTED
-      } else if (this.isClaimed && storageObj) {
+      } else if (this.isClaimed && this.storageObj) {
         this.currentState = this.states.CLAIMED_AND_OWNED_NOT_ROUTED
-      } else if (this.isClaimed && !storageObj) {
+      } else if (this.isClaimed && !this.storageObj) {
         // if claimed & !localstorage => show details and already registered
         this.currentState = this.states.CLAIMED_AND_NOT_OWNED
-      } else if (this.isAvailable && !storageObj) {
+      } else if (this.isAvailable && !this.storageObj) {
         // if not claimed & !localstorage => start pre-claim
         this.currentState = this.states.START_PRECLAIM
       } else if (this.isRevoked) {
         // currently is timeouted after a revoke
         this.currentState = this.states.IS_REVOKED
-      } else if (this.isAvailable && storageObj) {
+      } else if (this.isAvailable && this.storageObj) {
         // if not claimed & localstorage => show depending on state of localstorage
         // we have a claim tx
-        if (storageObj.claimTx) {
-          if (await this.isTxMined(storageObj.claimTx.tx_hash)) {
+        if (this.storageObj.claimTx) {
+          if (await this.isTxMined(this.storageObj.claimTx.tx_hash)) {
             this.currentState = this.states.CLAIM_MINED
           } else {
             this.currentState = this.states.WAITING_FOR_CLAIM
-            this.reloadAfterTx(storageObj.claimTx.tx_hash)
+            this.reloadAfterTx(this.storageObj.claimTx.tx_hash)
           }
-        } else if (storageObj.preClaimTx && storageObj.salt) {
+        } else if (this.storageObj.preClaimTx && this.storageObj.salt) {
           // we have a pre-claim & a stored salt
-          if (await this.isTxMined(storageObj.preClaimTx.tx_hash)) {
+          if (await this.isTxMined(this.storageObj.preClaimTx.tx_hash)) {
             this.currentState = this.states.PRECLAIM_MINED
           } else {
             this.currentState = this.states.WAITING_FOR_PRECLAIM
-            this.reloadAfterTx(storageObj.preClaimTx.tx_hash)
+            this.reloadAfterTx(this.storageObj.preClaimTx.tx_hash)
           }
         }
       }
@@ -238,7 +239,7 @@ export default {
     },
     async reloadAfterTx (txHash) {
       await this.$store.dispatch('waitForTransaction', { txHash: txHash })
-      this.checkDomainState(this.domain)
+      this.checkDomainState()
     },
     async startPreclaim () {
       try {
@@ -254,7 +255,7 @@ export default {
           updateTx: null
         }
         this.$store.commit('addDomainItem', domainObj)
-        this.checkDomainState(this.domain)
+        this.checkDomainState()
       } catch (e) {
         console.log(e)
         this.showError('Pre Claim Failed')
@@ -265,7 +266,7 @@ export default {
         const domainObj = this.storageObj
         const claimResult = await this.$store.dispatch('claimDomain', { domain: this.domain, salt: domainObj.salt })
         domainObj.claimTx = claimResult
-        this.checkDomainState(this.domain)
+        this.checkDomainState()
       } catch (e) {
         console.log(e)
         this.showError('Claim Failed')
@@ -276,7 +277,7 @@ export default {
         const domainObj = this.storageObj
         const updateDomainResult = await this.$store.dispatch('updateDomain', { nameHash: this.apiData.name_hash, pubKey: this.addressToPoint })
         domainObj.updateTx = updateDomainResult
-        this.checkDomainState(this.domain)
+        this.checkDomainState()
       } catch (e) {
         console.log(e)
         this.showError('Update Failed')
@@ -320,7 +321,7 @@ export default {
         updateTx: null
       }
       this.$store.commit('addDomainItem', domainObj)
-      this.checkDomainState(this.domain)
+      this.checkDomainState()
     },
     showError (message) {
       this.$store.dispatch('setNotification', {
@@ -332,7 +333,7 @@ export default {
   },
   mounted () {
     if (this.domain) {
-      this.checkDomainState(this.domain)
+      this.checkDomainState()
     }
     if (this.activeIdentity.address) {
       this.addressToPoint = this.activeIdentity.address
@@ -340,7 +341,7 @@ export default {
   },
   watch: {
     domain (newValue, oldValue) {
-      this.checkDomainState(newValue)
+      this.checkDomainState()
     }
   }
 }
