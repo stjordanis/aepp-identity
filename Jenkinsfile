@@ -41,4 +41,13 @@ pipeline {
             }
         }
     }
+
+    post {
+    	always {
+            	archiveArtifacts artifacts: 'platforms/android/app/build/**/*.apk', fingerprint: true
+    	}
+  }
 }
+
+
+platforms/android/app/build/outputs/apk/debug/app-debug.apk
