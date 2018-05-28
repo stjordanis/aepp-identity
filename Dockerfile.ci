@@ -1,0 +1,17 @@
+FROM beevelop/cordova:v8.0.0
+
+RUN apt-get update && \
+    apt-get install -y python \
+                       build-essential \
+                       libfontconfig \
+		       imagemagick &&\
+    rm -rf /var/lib/apt/lists/*
+
+COPY package.json package.json
+RUN npm install
+
+COPY . .
+
+RUN cordova platform add android && \
+    npm run build:android && \
+    npm run gen:cordova-resources
