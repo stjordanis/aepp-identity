@@ -22,15 +22,16 @@ pipeline {
                 sh 'npm run lint'
             }
         }
+	/* 
 	stage('Test') {
             steps {
-		/* 
+		
         	sh 'ln -sf /node_modules ./'
                 sh 'npm run unit'
-                sh 'npm run e2e'
-		*/
+                sh 'npm run e2e'	
             }
         }
+	*/
 	stage('Android Build') {
             steps {
         	sh 'ln -sf /node_modules ./'
