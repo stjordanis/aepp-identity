@@ -13,7 +13,3 @@ COPY package.json package.json
 RUN npm install
 
 COPY . .
-
-RUN cordova platform add android && \
-    npm run build:android && \
-    npm run gen:cordova-resources
