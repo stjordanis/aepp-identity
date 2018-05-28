@@ -15,7 +15,7 @@
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
     "e2e": "node test/e2e/runner.js",
     "test": "npm run lint && npm run unit && npm run e2e",
-    "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
+    "lint": "./node_modules/.bin/eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
     "@aeternity/aepp-components": "2.0.11",
