@@ -44,10 +44,10 @@ pipeline {
 
     post {
     	always {
+        	sh 'ls'
+        	sh 'pwd'
+		archive 'platforms/android/app/build/*'
             	archiveArtifacts artifacts: 'platforms/android/app/build/**/*.apk', fingerprint: true
     	}
   }
 }
-
-
-platforms/android/app/build/outputs/apk/debug/app-debug.apk
