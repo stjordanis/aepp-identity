@@ -44,7 +44,9 @@ pipeline {
 
     post {
     	always {
-            	archiveArtifacts artifacts: 'platforms/android/app/build/outputs/apk/*', fingerprint: true
-    	}
+	  archiveArtifacts {
+            pattern('platforms/**/*.apk')
+       	  }
+	}
   }
 }
