@@ -9,6 +9,7 @@ RUN apt-get update && \
 
 WORKDIR /
 
+RUN npm i -g npm
 COPY package.json package.json
 RUN npm install
 
