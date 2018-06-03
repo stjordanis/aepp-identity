@@ -26,6 +26,7 @@ pipeline {
 
 	    stage('Android Build') {
             steps {
+                sh 'docker-compose -H localhost:2376 ln -sf /node_modules ./'
                 sh 'docker-compose -H localhost:2376 build'
                 sh 'docker-compose -H localhost:2376 cordova platform add android'
                 sh 'docker-compose -H localhost:2376 npm run build:android'
