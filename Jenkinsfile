@@ -4,7 +4,7 @@ pipeline {
       		filename 'Dockerfile.ci'
       		args '-v /etc/group:/etc/group:ro ' +
            	     '-v /etc/passwd:/etc/passwd:ro ' +
-           	     '-v /var/lib/jenkins:/var/lib/jenkins' +
+           	     '-v /var/lib/jenkins:/var/lib/jenkins:rw' +
            	     '-v /usr/bin/docker:/usr/bin/docker:ro ' +
            	     '--network=host' 
    	}
@@ -32,7 +32,7 @@ pipeline {
             }
         }
 	*/
-	stage('Android Build') {
+	    stage('Android Build') {
             steps {
         	    sh 'ln -s /node_modules ./'
                 sh 'cordova platform add android'
