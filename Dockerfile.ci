@@ -12,4 +12,6 @@ WORKDIR /
 COPY package.json package.json
 RUN npm install
 
+RUN ln -f -s /node_modules/.bin/* /usr/local/bin/
+
 COPY . .
