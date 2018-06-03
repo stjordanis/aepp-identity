@@ -4,7 +4,7 @@ pipeline {
       		filename 'Dockerfile.ci'
       		args '-v /etc/group:/etc/group:ro ' +
            	     '-v /etc/passwd:/etc/passwd:ro ' +
-           	     '-v /var/lib/jenkins:/var/lib/jenkins' +
+           	     '-v /var/lib/jenkins:/var/lib/jenkins ' +
            	     '-v /usr/bin/docker:/usr/bin/docker:ro ' +
            	     '--network=host' 
    	    }
