@@ -13,12 +13,12 @@ RUN apt-get update && \
     curl -sL https://nodejs.org/dist/v${NODEJS_VERSION}/node-v${NODEJS_VERSION}-linux-x64.tar.gz | tar xz --strip-components=1 &&\
     rm -rf /var/lib/apt/lists/*
 
-RUN npm i -g cordova
+WORKDIR /
+RUN npm i -g cordova && cordova telemetry off
+COPY package.json package.json
+RUN npm install
 
 WORKDIR /app
-COPY package.json package.json
 
-RUN npm install
 ADD . .
 
-RUN cordova telemetry off
