@@ -1,19 +1,26 @@
-FROM beevelop/cordova:latest
+FROM tamasbarta/docker-android-sdk:27.0.3
+
+ENV NODEJS_VERSION=8.11.2 \
+    PATH=$PATH:/opt/node/bin
 
 RUN apt-get update && \
     apt-get install -y python \
                        build-essential \
                        libfontconfig \
-		       imagemagick &&\
+                       curl \
+                       gradle \
+		               imagemagick &&\
+    curl -sL https://nodejs.org/dist/v${NODEJS_VERSION}/node-v${NODEJS_VERSION}-linux-x64.tar.gz | tar xz --strip-components=1 &&\
     rm -rf /var/lib/apt/lists/*
 
-WORKDIR /
+RUN npm i -g cordova
 
-RUN npm i -g npm
-COPY package.json package.json
-RUN npm install
-
-RUN ln -f -s /node_modules/.bin/* /usr/local/bin/
 WORKDIR /app
+COPY package.json package.json
 
-RUN $ANDROID_HOME/tools/bin/sdkmanager --licenses
+RUN npm install
+ADD . .
+
+RUN cordova telemetry off
+
+RUN sleep 5d
