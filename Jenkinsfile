@@ -26,6 +26,7 @@ pipeline {
     stage('Android Build') {
       steps {
         sh 'ln -sf /node_modules ./'
+        sh 'cordova platform add android'
         sh 'npm run build:android'
         sh 'npm run gen:cordova-resources'
       }
