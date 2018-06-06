@@ -22,5 +22,3 @@ RUN npm install
 ADD . .
 
 RUN cordova telemetry off
-
-RUN sleep 5d
