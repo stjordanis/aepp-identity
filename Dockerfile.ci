@@ -24,4 +24,4 @@ RUN npm install
 ADD . .
 
 RUN npm run build
-RUN cordova platform remove android && mkdir www && cordova platform add android
+RUN cordova platform remove android && cordova platform add android
