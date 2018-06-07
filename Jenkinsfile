@@ -18,7 +18,7 @@ pipeline {
 
   post {
     always {
-      archiveArtifacts artifacts: '/app/platforms/android/app/build/outputs/apk/debug/app-debug.apk', fingerprint: true
+      archiveArtifacts artifacts: 'build/outputs/apk/debug/app-debug.apk', fingerprint: true
     }
   }
 }
