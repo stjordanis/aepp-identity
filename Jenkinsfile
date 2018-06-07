@@ -13,7 +13,6 @@ pipeline {
         sh 'cordova-splash && cordova-icon'
         sh 'cordova build android'
       }
-    }
   }
 
   post {
