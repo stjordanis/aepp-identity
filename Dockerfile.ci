@@ -25,3 +25,6 @@ ADD . .
 
 RUN npm run build
 RUN cordova platform remove android && cordova platform add android
+
+RUN cordova-splash && cordova-icon
+RUN cordova build android

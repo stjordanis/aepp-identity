@@ -8,15 +8,6 @@ pipeline {
     }
   }
 
-  stages {
-    stage('Android Build') {
-      steps {
-        sh 'cordova-splash && cordova-icon'
-        sh 'cordova build android'
-      }
-    }
-  }
-
   post {
     always {
       archiveArtifacts artifacts: 'platforms/**/*.apk', fingerprint: true
