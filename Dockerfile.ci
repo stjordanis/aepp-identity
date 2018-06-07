@@ -23,3 +23,4 @@ WORKDIR /app
 
 ADD . .
 
+RUN cordova platform remove android && cordova platform add android
