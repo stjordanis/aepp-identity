@@ -14,17 +14,16 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 
-WORKDIR /app
 
 RUN npm i -g cordova cordova-splash cordova-icon && cordova telemetry off
 
 COPY package.json package.json
 RUN npm install
+RUN ln -f -s /node_modules/.bin/* /usr/local/bin/
+RUN groupadd -g 993 docker
+
+WORKDIR /app
 
 ADD . .
 
-RUN npm run build
-RUN cordova platform remove android && cordova platform add android
-
-RUN cordova-icon && cordova-splash
-RUN cordova build android
+RUN cordova platform remove && mkdir www && android && cordova platform add android

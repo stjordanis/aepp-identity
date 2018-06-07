@@ -11,7 +11,8 @@ pipeline {
   stages {
     stage('Lint') {
       steps {
-        sh 'npm i'
+        sh 'cp -r /node_modules ./'
+        sh 'npm install'
         sh 'cordova platform add android'
         sh 'npm run build:android'
         archiveArtifacts artifacts: 'platforms/**/*.apk', fingerprint: true
