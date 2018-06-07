@@ -8,26 +8,10 @@ pipeline {
     }
   }
 
-  stages {
-    stage('Build') {
+  stage('Android Build') {
       steps {
-        sh 'ln -sf /node_modules ./'
-        sh 'npm run build'
-      }
-    }
-
-    stage('Lint') {
-      steps {
-        sh 'ln -sf /node_modules ./'
-        sh 'npm run lint'
-      }
-    }
-
-    stage('Android Build') {
-      steps {
-        sh 'ln -sf /node_modules ./'
-        sh 'npm run build:android'
-        sh 'npm run gen:cordova-resources'
+        sh 'cordova-splash && cordova-icon'
+        sh 'cordova build android'
       }
     }
   }

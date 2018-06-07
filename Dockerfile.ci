@@ -15,12 +15,12 @@ RUN apt-get update && \
 
 RUN npm i -g cordova && cordova telemetry off
 
-WORKDIR /
+WORKDIR /app
+
 COPY package.json package.json
 RUN npm install
 
-WORKDIR /app
-
 ADD . .
 
+RUN npm run build
 RUN cordova platform remove android && mkdir www && cordova platform add android
