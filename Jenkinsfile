@@ -8,6 +8,14 @@ pipeline {
     }
   }
 
+  stages {
+    stage('Lint') {
+      steps {
+        sh 'echo test'
+      }
+    }
+  }
+
   post {
     always {
       archiveArtifacts artifacts: 'platforms/**/*.apk', fingerprint: true
