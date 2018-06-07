@@ -11,14 +11,9 @@ pipeline {
   stages {
     stage('Lint') {
       steps {
-        sh 'echo test'
+        archiveArtifacts artifacts: 'platforms/**/*.apk', fingerprint: true
       }
     }
   }
 
-  post {
-    always {
-      archive '/app/platforms/android/app/build/outputs/apk/debug/app-debug.apk'
-    }
-  }
 }

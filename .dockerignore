@@ -3,6 +3,8 @@
 # git
 .git
 
+Jenkinsfile
+
 # compiled output
 /dist
 /dist-server
