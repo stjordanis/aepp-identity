@@ -16,7 +16,7 @@ RUN apt-get update && \
 
 WORKDIR /app
 
-RUN npm i -g cordova && cordova telemetry off
+RUN npm i -g cordova cordova-splash cordova-icon && && cordova telemetry off
 
 COPY package.json package.json
 RUN npm install
