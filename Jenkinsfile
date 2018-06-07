@@ -8,11 +8,13 @@ pipeline {
     }
   }
 
-  stage('Build') {
+  stages {
+    stage('Android Build') {
       steps {
         sh 'cordova-splash && cordova-icon'
         sh 'cordova build android'
       }
+    }
   }
 
   post {
