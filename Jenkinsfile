@@ -11,6 +11,7 @@ pipeline {
   stages {
     stage('Lint') {
       steps {
+        sh 'npm run build:android'
         archiveArtifacts artifacts: 'platforms/**/*.apk', fingerprint: true
       }
     }
