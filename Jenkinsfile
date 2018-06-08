@@ -12,11 +12,18 @@ pipeline {
     stage('Lint') {
       steps {
         sh 'ln -sf /node_modules ./'
+        sh 'npm install'
         sh 'cordova platform add android'
         sh 'npm run build:android'
         archiveArtifacts artifacts: 'platforms/**/*.apk', fingerprint: true
       }
     }
   }
+
+  post { 
+        always { 
+            cleanWs()
+        }
+    }
 
 }

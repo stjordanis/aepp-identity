@@ -15,12 +15,10 @@ RUN apt-get update && \
 
 
 
-RUN npm i -g cordova cordova-splash cordova-icon && cordova telemetry off
+RUN npm i -g cordova@7 cordova-splash cordova-icon && cordova telemetry off
 
 COPY package.json package.json
 RUN npm install
-RUN ln -f -s /node_modules/.bin/* /usr/local/bin/
-RUN groupadd -g 993 docker
 
 WORKDIR /app
 
