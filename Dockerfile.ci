@@ -26,4 +26,4 @@ WORKDIR /app
 
 ADD . .
 
-RUN cordova platform remove && mkdir www && android && cordova platform add android
+RUN cordova platform remove && mkdir www && cordova platform add android
