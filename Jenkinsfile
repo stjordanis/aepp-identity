@@ -9,15 +9,24 @@ pipeline {
   }
 
   stages {
-    stage('Lint') {
+
+    stage('Build') {
       steps {
-        sh 'ln -sf /node_modules ./'
+        sh 'cp -r /node_modules ./'
+        sh 'npm install'
+        archiveArtifacts artifacts: 'build/*', fingerprint: true
+      }
+    }
+
+    stage('Build Native') {
+      steps {
+        sh 'cp -r /node_modules ./'
         sh 'npm install'
         sh 'cordova platform add android'
         sh 'npm run build:android'
-        archiveArtifacts artifacts: 'platforms/**/*.apk', fingerprint: true
       }
     }
+    
   }
 
   post { 
