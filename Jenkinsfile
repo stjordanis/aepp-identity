@@ -21,6 +21,7 @@ pipeline {
     stage('Build Native') {
       steps {
         sh 'ls'
+        sh 'cordova platform rm android'
         sh 'cordova platform add android'
         sh 'npm run build:android'
       }
