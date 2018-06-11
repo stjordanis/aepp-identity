@@ -2,9 +2,7 @@ pipeline {
   agent {
     dockerfile {
       filename 'Dockerfile.ci'
-      args '-v /etc/group:/etc/group:ro ' +
-           '-v /etc/passwd:/etc/passwd:ro ' 
-      }
+    }
   }
 
   stages {
