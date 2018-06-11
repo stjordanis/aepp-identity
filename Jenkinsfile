@@ -2,7 +2,8 @@ pipeline {
   agent {
     dockerfile {
       filename 'Dockerfile.ci'
-      args '-u root'
+      args '-v /etc/group:/etc/group:ro ' +
+           '-v /etc/passwd:/etc/passwd:ro '
     }
   }
 
