@@ -2,8 +2,6 @@ pipeline {
   agent {
     dockerfile {
       filename 'Dockerfile.ci'
-      args '-v /etc/group:/etc/group:ro ' +
-           '-v /etc/passwd:/etc/passwd:ro '
     }
   }
 
@@ -11,7 +9,6 @@ pipeline {
 
     stage('Build') {
       steps {
-        sh 'npm install'
         sh 'npm run build'
         archiveArtifacts artifacts: 'build/*', fingerprint: true
       }
