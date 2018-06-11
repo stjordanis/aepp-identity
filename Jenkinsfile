@@ -9,12 +9,15 @@ pipeline {
 
     stage('Build') {
       steps {
+        sh 'ln -sf /node_modules ./'
+        sh 'npm install'
         sh 'npm run build'
       }
     }
 
     stage('Test') {
       steps {
+        sh 'ln -sf /node_modules ./'
         sh 'npm run unit'
       }
     }
