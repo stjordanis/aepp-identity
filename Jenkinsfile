@@ -13,14 +13,5 @@ pipeline {
         archiveArtifacts artifacts: 'android-debug.apk', fingerprint: true
       }
     }
-
-    stage('Build Native') {
-      steps {
-        sh 'cordova platform add android'
-        sh 'npm run build:android'
-        archiveArtifacts artifacts: 'platforms/android/**/*.apk', fingerprint: true
-      }
-    }
-
   }
 }
