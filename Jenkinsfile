@@ -9,8 +9,9 @@ pipeline {
 
     stage('Build') {
       steps {
-        sh 'npm run build'
-        archiveArtifacts artifacts: 'build/*', fingerprint: true
+        def workspace = pwd()
+        sh 'copy /app/platforms/android/build/outputs/apk/android-debug.apk ${workspace}/android-debug.apk'
+        archiveArtifacts artifacts: 'android-debug.apk', fingerprint: true
       }
     }
 
