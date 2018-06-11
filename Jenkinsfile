@@ -9,6 +9,7 @@ pipeline {
 
     stage('Build') {
       steps {
+        sh 'ls $WORKSPACE'
         archiveArtifacts artifacts: '$WORKSPACE/app/platforms/android/build/outputs/apk/android-debug.apk', fingerprint: true
       }
     }
