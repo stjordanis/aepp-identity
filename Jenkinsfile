@@ -2,6 +2,7 @@ pipeline {
   agent {
     dockerfile {
       filename 'Dockerfile.ci'
+      args '-u root'
     }
   }
 
@@ -10,7 +11,6 @@ pipeline {
     stage('Build') {
       steps {
         sh 'ln -sf /node_modules ./'
-        sh 'npm install'
         sh 'npm run build'
       }
     }
