@@ -12,7 +12,6 @@ pipeline {
 
     stage('Build') {
       steps {
-        sh 'cp -r /node_modules ./'
         sh 'npm install'
         archiveArtifacts artifacts: 'build/*', fingerprint: true
       }
@@ -20,13 +19,11 @@ pipeline {
 
     stage('Build Native') {
       steps {
-        sh 'cp -r /node_modules ./'
-        sh 'npm install'
         sh 'cordova platform add android'
         sh 'npm run build:android'
       }
     }
-    
+
   }
 
   post { 

@@ -20,8 +20,4 @@ RUN npm i -g cordova@7 cordova-splash cordova-icon && cordova telemetry off
 COPY package.json package.json
 RUN npm install
 
-WORKDIR /app
-
-ADD . .
-
 #RUN cordova platform remove && mkdir www && cordova platform add android
