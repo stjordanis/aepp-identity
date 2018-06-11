@@ -16,6 +16,7 @@ pipeline {
 
     stage('Build Native') {
       steps {
+        sh 'npm i cordova@7'
         sh 'cordova platform add android'
         sh 'npm run build:android'
         archiveArtifacts artifacts: 'platforms/android/**/*.apk', fingerprint: true
