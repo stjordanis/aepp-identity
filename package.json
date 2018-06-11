@@ -33,7 +33,6 @@
     "emoji-datasource-apple": "^4.0.3",
     "es6-promise": "^4.1.1",
     "eth-lightwallet": "^3.0.0",
-    "ethereum-blockies-png": "git+https://github.com/acdbaykal/ethereum-blockies-png.git",
     "ethjs-unit": "^0.1.6",
     "fuse.js": "^3.2.0",
     "lodash": "^4.17.4",
