@@ -11,7 +11,9 @@
     "build:cordova": "export IS_CORDOVA=true && npm run build",
     "build:ios": "npm run build:cordova && cordova build ios",
     "build:android": "npm run build:cordova && cordova build android",
+    "run:ios": "npm run build && cordova run ios --device",
     "run:android": "npm run build:cordova && cordova run android",
+    "run:browser": "npm run build && cordova run browser",
     "gen:cordova-resources": "cordova-splash && cordova-icon",
     "unit": "jest --config test/unit/jest.conf.js --coverage",
     "e2e": "node test/e2e/runner.js",
@@ -24,6 +26,7 @@
     "@aeternity/bip39": "github:aeternity/bip39",
     "@aeternity/hd-wallet": "github:aeternity/hd-wallet-js",
     "bignumber.js": "^4.1.0",
+    "cordova-plugin-airgap-secure-storage": "git+ssh://git@github.com/aeternity/cordova-plugin-airgap-secure-storage.git#master",
     "emoji-datasource-apple": "^4.0.3",
     "ethjs-unit": "^0.1.6",
     "fuse.js": "^3.2.0",
@@ -116,7 +119,8 @@
         "ANDROID_SCHEME": " ",
         "ANDROID_HOST": " ",
         "ANDROID_PATHPREFIX": "/"
-      }
+      },
+      "cordova-plugin-airgap-secure-storage": {}
     },
     "platforms": [
       "browser",
