@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import createPersistedState from 'vuex-persistedstate'
+import VuexPersistence from 'vuex-persist'
 import uuid from 'uuid/v4'
 import { appsRegistry } from '../lib/appsRegistry'
 import networksRegistry from '../lib/networksRegistry'
@@ -13,6 +13,7 @@ import remoteConnection from './plugins/remoteConnection'
 import notificationOnRemoteConnection from './plugins/notificationOnRemoteConnection'
 import decryptAccounts from './plugins/decryptAccounts'
 import aeppApi from './plugins/aeppApi'
+import promisifySecureStorage from '../lib/promisifySecureStorage'
 
 Vue.use(Vuex)
 
