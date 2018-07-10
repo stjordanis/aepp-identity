@@ -26,7 +26,6 @@
     "@aeternity/bip39": "github:aeternity/bip39",
     "@aeternity/hd-wallet": "github:aeternity/hd-wallet-js",
     "bignumber.js": "^4.1.0",
-    "cordova-plugin-airgap-secure-storage": "git+ssh://git@github.com/aeternity/cordova-plugin-airgap-secure-storage.git#master",
     "emoji-datasource-apple": "^4.0.3",
     "ethjs-unit": "^0.1.6",
     "fuse.js": "^3.2.0",
