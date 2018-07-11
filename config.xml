@@ -41,4 +41,5 @@
         <variable name="ANDROID_HOST" value=" " />
         <variable name="ANDROID_PATHPREFIX" value="/" />
     </plugin>
+    <plugin name="cordova-plugin-airgap-secure-storage" spec="https://github.com/aeternity/cordova-plugin-airgap-secure-storage.git" />
 </widget>
