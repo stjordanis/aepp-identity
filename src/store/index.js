@@ -56,16 +56,16 @@ export default function (storage) {
               'mobile.names'
             ] : []
         ],
-        setState: (key, state, storage) =>
+        restoreState: (key, storage) =>
+          storage.getItem(key).then((state) => JSON.parse(state, (key, value) =>
+            value && value.type === 'ArrayBuffer'
+              ? new Uint8Array(value.data).buffer
+              : value)),
+        saveState: (key, state, storage) =>
           storage.setItem(key, JSON.stringify(state, (key, value) =>
             value instanceof ArrayBuffer
               ? { type: 'ArrayBuffer', data: Array.from(new Uint8Array(value)) }
-              : value)),
-        getState: (key, storage) =>
-          JSON.parse(storage.getItem(key), (key, value) =>
-            value && value.type === 'ArrayBuffer'
-              ? new Uint8Array(value.data).buffer
-              : value)
+              : value))
       }))).plugin,
       pollBalance,
       initEpoch,

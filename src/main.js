@@ -70,7 +70,7 @@ const initialize = function (App, storage) {
  * First check if the device has loaded everything,
  * in this case is true, then load Vuejs application
  */
-document.addEventListener('deviceready', function () {
+document.addEventListener(process.env.IS_CORDOVA ? 'deviceready' : 'onload', function () {
   if (window.SecureStorage) {
     /**
      * Instantiate a new secureStorage
